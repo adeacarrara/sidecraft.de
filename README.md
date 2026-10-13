@@ -4,6 +4,7 @@ Site vitrine de sidecraft.de : Next.js (App Router) + TypeScript, prêt pour Git
 
 ## Structure
 
+
 ```
 app/
   layout.tsx            Polices, SEO (titre, description, canonical, Open Graph)
