@@ -3,8 +3,16 @@
  * Variables créées automatiquement par l'intégration Upstash de Vercel
  * (KV_REST_API_URL / KV_REST_API_TOKEN) ou saisies à la main (UPSTASH_REDIS_REST_*).
  */
-const URL_ = process.env.KV_REST_API_URL || process.env.UPSTASH_REDIS_REST_URL;
-const TOKEN = process.env.KV_REST_API_TOKEN || process.env.UPSTASH_REDIS_REST_TOKEN;
+// Accepte aussi les noms avec un préfixe choisi lors de la connexion dans Vercel
+// (ex. MONPREFIXE_KV_REST_API_URL). Le jeton « READ_ONLY » est ignoré : il ne permet pas d'écrire.
+function findEnv(...suffixes: string[]): string | undefined {
+  for (const s of suffixes) if (process.env[s]) return process.env[s];
+  const key = Object.keys(process.env).find((k) => suffixes.some((s) => k.endsWith(`_${s}`)) && !k.includes("READ_ONLY"));
+  return key ? process.env[key] : undefined;
+}
+
+const URL_ = findEnv("KV_REST_API_URL", "UPSTASH_REDIS_REST_URL");
+const TOKEN = findEnv("KV_REST_API_TOKEN", "UPSTASH_REDIS_REST_TOKEN");
 
 export const storageReady = (): boolean => Boolean(URL_ && TOKEN);
 
